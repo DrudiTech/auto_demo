@@ -1,0 +1,1 @@
+## Class that wrap Beautiful Soup
