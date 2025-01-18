@@ -8,6 +8,7 @@ import pandas as pd
  ### URL SITE
 MAIN_URL = "https://listingcenter.nasdaq.com/rulebook/nasdaq/rulefilings"
  ### HTML ID of the main table where to get data
+sDesiredTabTag = "NASDAQ-tab-2025"
 sIdMainTable = "NASDAQ-tab-2025"
 
 # MAIN ROUTINE
@@ -18,8 +19,10 @@ soup = BeautifulSoup(request.content, 'html.parser')
 
 ## DATA GATHERING
 ### Force tab selection on last year
-objDesiredTab = soup.find_all("li", {"class": "tab-link", "data-table":sIdMainTable})
-
+objDesiredTab = soup.find_all("li", {"class": "tab-link", "data-table":sDesiredTabTag})
+if objDesiredTab:
+    objDesiredTab.count
+    
 all_items = soup.find_all("", {"class": "item-list-class"})
 ## DATA CLEANING
 ## DATA PUBLISHING
