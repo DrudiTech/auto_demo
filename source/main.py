@@ -47,20 +47,10 @@ if objDesiredTab.get_attribute("class") != "tab-link current":
 
 
 
-####### BEAUTIFUL SOUP
-# Wrong object, should get the children
-# objSDesiredTbl = soup.find_all("li", {"class": "tab-link", "data-tab":sDesiredTabTag})
-
 
 objDesiredTable = driver.find_element(By.XPATH,"//div[@id='"+sIdMainTable+"']/table")
 
-# f = open("oHTML.txt", "a")
-# f.write(str(objDesiredTable))
-# f.close()
 
-g = open("raw_text.txt", "a")
-g.write(objDesiredTable.get_attribute("outerHTML"))
-g.close()
 
 
 ## DATA CLEANING
@@ -93,15 +83,6 @@ print(tblData)
 #tabData.to_excel("./output/output.xlsx")
 tblData.to_csv("./output/output.csv")
 ##
-
-
-
-
-
-
-
-
-
 
 
 

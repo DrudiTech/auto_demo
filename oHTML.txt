@@ -1,1 +1,0 @@
-<li class="tab-link current" data-tab="NASDAQ-tab-2025">NASDAQ 2025</li>
