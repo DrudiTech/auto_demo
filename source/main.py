@@ -45,41 +45,53 @@ objDesiredTab = driver.find_element(By.XPATH,"//li[@data-tab='"+sDesiredTabTag+"
 if objDesiredTab.get_attribute("class") != "tab-link current":
     objDesiredTab.click()
 
-objSDesiredTab = soup.find_all("li", {"class": "tab-link", "data-tab":sDesiredTabTag})
+
+
+####### BEAUTIFUL SOUP
+# Wrong object, should get the children
+# objSDesiredTbl = soup.find_all("li", {"class": "tab-link", "data-tab":sDesiredTabTag})
+
 
 objDesiredTable = driver.find_element(By.XPATH,"//div[@id='"+sIdMainTable+"']/table")
+
+# f = open("oHTML.txt", "a")
+# f.write(str(objDesiredTable))
+# f.close()
+
+g = open("raw_text.txt", "a")
+g.write(objDesiredTable.get_attribute("outerHTML"))
+g.close()
 
 
 ## DATA CLEANING
 # empty dictionary to store data, could be a list of anything. i just like dicts
-tabData = pd.DataFrame(columns=['Name', 'Link', 'Description'])
+tblData = pd.DataFrame(columns=['Name', 'Link', 'Description'])
 #tabData = pd.read_html(objDesiredTable.get_attribute("outerHTML"))[0]
-row_list = []
+lRows = []
 
 countDATA = 0
-for row in objDesiredTable.find_elements(By.TAG_NAME,"tr"):
-    dictrow=  {"name": "",
+for iRow in objDesiredTable.find_elements(By.TAG_NAME,"tr"):
+    dictRow=  {"name": "",
                 "link": "",
                 "description": ""}
     
-    cells = row.find_elements(By.TAG_NAME,"td")
-    if len(cells)>0:
-        dataRow = [cells[0].text,cells[0].find_element(By.TAG_NAME,"a").get_attribute("href"),cells[1].text]
-        dictrow.update({"name":cells[0].text})
-        dictrow.update({"link":cells[0].find_element(By.TAG_NAME,"a").get_attribute("href")})
-        dictrow.update({"description":cells[1].text})
-        row_list.append(dictrow)
+    aCells = iRow.find_elements(By.TAG_NAME,"td")
+    if len(aCells)>0:
+        dictRow.update({"name":aCells[0].text})
+        dictRow.update({"link":aCells[0].find_element(By.TAG_NAME,"a").get_attribute("href")})
+        dictRow.update({"description":aCells[1].text})
+        lRows.append(dictRow)
         
         #tabData.iloc(countDATA) = dataRow
         countDATA = countDATA + 1
 
-tabData = pd.DataFrame(row_list)
+tblData = pd.DataFrame(lRows)
 ## DATA PUBLISHING
 # do whats needed with data
-print(tabData)
+print(tblData)
 
-tabData.to_excel("./output/output.xlsx")
-tabData.to_csv("./output/output.csv")
+#tabData.to_excel("./output/output.xlsx")
+tblData.to_csv("./output/output.csv")
 ##
 
 
