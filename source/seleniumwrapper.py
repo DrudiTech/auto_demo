@@ -5,6 +5,15 @@ from selenium.common import NoSuchElementException, ElementNotInteractableExcept
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
+DEFAULT_WAITING_SEC = 2
+DEFAULT_N_TRIES = 3
+
+ENABLE_LOG= False
+
+def print_with_switch(text):
+    if ENABLE_LOG:
+        print(text)
+
 
 
 class CustomElementNotFound(Exception):
@@ -23,17 +32,33 @@ class CustomElementNotFound(Exception):
 
 
 
-def waitElementByXPath(driver,sXPath,waitingSecs,nMaxTry):
+def waitElementByXPath(driver,sXPath,waitingSecs=DEFAULT_WAITING_SEC,nMaxTry=DEFAULT_N_TRIES):
     i = 0
     while i<=nMaxTry:
         driver.implicitly_wait(waitingSecs)
+        print_with_switch('Search '+sXPath+' tentative nr :' + str(i+1))
         try:
              result = driver.find_element(By.XPATH,sXPath)
-             print('End of search '+sXPath+' : SUCCESSFUL')
+             print_with_switch('End of search '+sXPath+' : SUCCESSFUL')
              return result
         except:
-            print('Search '+sXPath+' tentative nr :' + i+1)
-    print('End of search '+sXPath+' : UNSUCCESSFUL')
+            continue
+    print_with_switch('End of search '+sXPath+' : UNSUCCESSFUL')
+    raise CustomElementNotFound(sXPath)
+
+def waitChildrenElementByXPath(weParent,sXPath,waitingSecs=DEFAULT_WAITING_SEC,nMaxTry=DEFAULT_N_TRIES):
+    i = 0
+    driver = weParent.parent
+    while i<=nMaxTry:
+        driver.implicitly_wait(waitingSecs)
+        print_with_switch('Search '+sXPath+' tentative nr :' + str(i+1))
+        try:
+             result = weParent.find_elements(By.XPATH,sXPath)
+             print_with_switch('End of search '+sXPath+' : SUCCESSFUL')
+             return result
+        except:
+            continue
+    print_with_switch('End of search '+sXPath+' : UNSUCCESSFUL')
     raise CustomElementNotFound(sXPath)
 
 

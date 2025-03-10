@@ -81,61 +81,62 @@ soup = BeautifulSoup(request.content, 'html.parser')
 
 ## FORM FILLING
 
-weWriting = driver.find_element(By.XPATH,"//input[@name='username']")
+weWriting = waitElementByXPath(driver,"//input[@name='username']",3,10)
 if weWriting.get_attribute("type") == "text":
+    weWriting.clear()
     weWriting.send_keys("Paolo")
 
 
-weWriting = driver.find_element(By.XPATH,"//input[@name='password']")
+weWriting = waitElementByXPath(driver,"//input[@name='password']",3,10)
 if weWriting.get_attribute("type") == "password":
+    weWriting.clear()
     weWriting.send_keys("secret")
 
 
-weWriting = driver.find_element(By.XPATH,"//textarea[@name='comments']")
+weWriting = waitElementByXPath(driver,"//textarea[@name='comments']",3,10)
+weWriting.clear()
 weWriting.send_keys("This is a simple comment to show you i can write quite a bit :)")
 
 
-weButton = waitElementByXPath(driver,"//input[@name='submitbutton']",3,10)
-if weButton.get_attribute("tag_name") == "input":
-    weWriting.click()
+weButton = waitElementByXPath(driver,"//input[@value ='submit']",3,10)
+weButton.click()
 
 
 # CHECK SUBMIT
 weTitle =waitElementByXPath(driver,"//div/h2[text()='Submitted Values']",3,10)
 
+weResultForm = waitElementByXPath(driver, "//div[@class='centered form-results']")
+#weAllResultsValue = waitChildrenElementByXPath(weResultForm, "//li")
+#weAllResultsField = waitChildrenElementByXPath(weResultForm, "//p/strong")
 
+weAllResultsCell = waitChildrenElementByXPath(weResultForm,"./div")
 
-
-
-## DATA CLEANING
-# empty dictionary to store data, could be a list of anything. i just like dicts
-tblData = pd.DataFrame(columns=['Name', 'Link', 'Description'])
-#tabData = pd.read_html(objDesiredTable.get_attribute("outerHTML"))[0]
+tblDataResult = pd.DataFrame(columns=['Field', 'Value'])
 lRows = []
 
-countDATA = 0
-for iRow in objDesiredTable.find_elements(By.TAG_NAME,"tr"):
-    dictRow=  {"name": "",
-                "link": "",
-                "description": ""}
-    
-    aCells = iRow.find_elements(By.TAG_NAME,"td")
-    if len(aCells)>0:
-        dictRow.update({"name":aCells[0].text})
-        dictRow.update({"link":aCells[0].find_element(By.TAG_NAME,"a").get_attribute("href")})
-        dictRow.update({"description":aCells[1].text})
-        lRows.append(dictRow)
-        
-        #tabData.iloc(countDATA) = dataRow
-        countDATA = countDATA + 1
+for i in range(len(weAllResultsCell)):
+    dictRow = {"Field":"",
+                "Value":""}
+    try:
+        weField = waitChildrenElementByXPath(weAllResultsCell[i], "./p/strong")[0]
+    except:
+        next
 
-tblData = pd.DataFrame(lRows)
+    dictRow.update({"Field":weField.text})
+    if weAllResultsCell[i].get_attribute("data-hasvalue") == "yes":
+        dictRow.update({"Value":waitChildrenElementByXPath(weAllResultsCell[i], "./ul/li")[0].text})
+    lRows.append(dictRow)
+        
+tblDataResult = pd.DataFrame(lRows)
+
+
+
 ## DATA PUBLISHING
 # do whats needed with data
-print(tblData)
+print(tblDataResult)
 
 #tabData.to_excel("./output/output.xlsx")
-tblData.to_csv("./output/output.csv")
+tblDataResult.to_csv("./output/output.csv")
 ##
 
 
