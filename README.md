@@ -1,9 +1,9 @@
 # auto_demo
-Simple automation demo project 
+Simple automation demo project. The automation will execute the following task:
 1. Site opening
-2. Form filling
+2. Form filling (hardcoded value)
 3. Submit verification
-4. Data download
+4. Data download to csv
 
-Include automatic chromedriver download based on the current chrome version istalled.
-This funcionality limits the projet to Mac system. 
+Include automatic chromedriver download based on the current chrome version installed.
+This functionality limits the project to Mac system. 
