@@ -9,7 +9,6 @@ import psutil
 import shutil
 import requests
 from urllib.request import urlretrieve
-import zipfile
 import os
 from chromever import *
 from seleniumwrapper import *
